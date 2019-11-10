@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div v-if="isLoaded">
+    <div v-if="isLoading">
       <div class="position-relative">
         <Loader />
       </div>
@@ -74,13 +74,15 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Carousel from "@/components/Carousel";
 import SearchBar from "@/components/SearchBar";
+import Loader from "@/components/Loader";
 import API from "@/API.ts";
 
 @Component({
   name: "Home",
   components: {
     Carousel,
-    SearchBar
+    SearchBar,
+    Loader
   }
 })
 export default class Home extends Vue {
@@ -90,9 +92,9 @@ export default class Home extends Vue {
   shows = [];
   topShows = [];
   popularShows = [];
-  isLoaded = false;
+  isLoading = true;
 
-  created() {
+  mounted() {
     this.gatherData();
   }
 
@@ -104,6 +106,7 @@ export default class Home extends Vue {
           .then(topMovies => {
             if (!topMovies.data.results) return this.gatherData();
 
+            this.isLoading = false;
             this.movies = movies.data.results;
             this.topMovies = topMovies.data.results;
           })

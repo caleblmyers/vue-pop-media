@@ -1,0 +1,66 @@
+<template>
+  <div class="align-center" id="loader">
+    <div class="bounce-loader mt-4">
+      <span class="nav-bg"></span>
+      <span class="bg-light-green"></span>
+      <span class="nav-bg"></span>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "Loader"
+};
+</script>
+
+<style lang="scss" scoped>
+.dot-loader {
+  font-size: 40px;
+  color: palevioletred;
+}
+.dot-loader::after {
+  content: "\2026";
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: dots steps(4, end) 2s infinite;
+  width: 0px;
+}
+
+.bounce-loader {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bounce-loader > span {
+  display: inline-block;
+  /* background-color: purple; */
+  height: 0;
+  width: 0;
+  border-radius: 50%;
+  margin: 0 8px;
+  transform: translate3d(0);
+  animation: bounce 0.9s infinite alternate;
+}
+.bounce-loader > span:nth-child(2) {
+  /* background-color: palevioletred; */
+  animation-delay: 0.3s;
+}
+.bounce-loader > span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+@keyframes dots {
+  to {
+    width: 1.25em;
+  }
+}
+@keyframes bounce {
+  to {
+    width: 1.5rem;
+    height: 1.5rem;
+    transform: translate3d(0, -1.5rem, 0);
+  }
+}
+</style>
