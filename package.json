@@ -1,0 +1,20 @@
+{
+  "name": "vue-pop-media",
+  "version": "1.0.0",
+  "description": "Pop Media built with Vue.js and TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd client && npm start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/caleblmyers/vue-pop-media.git"
+  },
+  "author": "Caleb Myers",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/caleblmyers/vue-pop-media/issues"
+  },
+  "homepage": "https://github.com/caleblmyers/vue-pop-media#readme"
+}
