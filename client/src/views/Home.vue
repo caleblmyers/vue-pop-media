@@ -26,11 +26,11 @@
             <div class="row no-gutters">
               <div class="col-12 col-xl-6 p-3">
                 <div class="h5">Featured</div>
-                <Carousel :data="movies" :type="movie" :handler="console.log" />
+                <Carousel :data="movies" type="movie" :handler="null" />
               </div>
               <div class="col-12 col-xl-6 p-3">
                 <div class="h5">Top Rated</div>
-                <Carousel :data="topMovies" :type="topMovie" :handler="console.log" />
+                <Carousel :data="topMovies" type="topMovie" :handler="null" />
               </div>
             </div>
           </div>
@@ -73,11 +73,14 @@
 // @ is an alias to /src
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Carousel from "@/components/Carousel";
+import SearchBar from "@/components/SearchBar";
+import API from "@/API.ts";
 
 @Component({
   name: "Home",
   components: {
-    Carousel
+    Carousel,
+    SearchBar
   }
 })
 export default class Home extends Vue {
@@ -88,5 +91,25 @@ export default class Home extends Vue {
   topShows = [];
   popularShows = [];
   isLoaded = false;
+
+  created() {
+    this.gatherData();
+  }
+
+  gatherData() {
+    API.TMDB.trending("movie")
+      .then(movies => {
+        if (!movies.data.results) return this.gatherData();
+        API.TMDB.topRated("movie")
+          .then(topMovies => {
+            if (!topMovies.data.results) return this.gatherData();
+
+            this.movies = movies.data.results;
+            this.topMovies = topMovies.data.results;
+          })
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }
 }
 </script>
