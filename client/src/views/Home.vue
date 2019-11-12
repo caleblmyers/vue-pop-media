@@ -34,47 +34,47 @@
               </div>
             </div>
           </div>
-          <!-- <div class="col-12 col-md-4 p-3">
+          <div class="col-12 col-md-4 p-3">
             <div class="h5">In Theaters</div>
-            <Table data-set="{this.state.nowPlaying.slice(0," 10)} type="movie" />
-          </div>-->
+            <Table :dataSet="nowPlaying.slice(0, 10)" type="movie" />
+          </div>
         </div>
 
-        <!-- <div class="h2 text-center">TV Shows</div>
+        <div class="h2 text-center">TV Shows</div>
         <div class="row no-gutters">
           <div class="col-12 col-md-8">
             <div class="row no-gutters">
               <div class="col-12 col-xl-6 p-3">
                 <div class="h5">Featured</div>
-                <Carousel data={this.state.shows} type={"show"} handler={console.log} />
+                <Carousel :data="shows" :type="'show'" />
               </div>
               <div class="col-12 col-xl-6 p-3">
                 <div class="h5">Top Rated</div>
-                <Carousel data={this.state.topShows} type={"topShow"} handler={console.log} />
+                <Carousel :data="topShows" type="topShow" />
               </div>
-            </div>{/*
-            <div class="row no-gutters">
+            </div>
+            <!-- <div class="row no-gutters">
               <div class="col-12">
                 <div class="h5">Editor Picks</div>
               </div>
-            </div>*/}
+            </div>-->
           </div>
           <div class="col-12 col-md-4 p-3">
             <div class="h5">Today's Most Popular</div>
-            <Table data-set="{this.state.popularShows.slice(0," 10)} type="tv" />
+            <Table :dataSet="popularShows.slice(0, 10)" type="tv" />
           </div>
-        </div>-->
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
 import { Vue, Component, Prop } from "vue-property-decorator";
 import Carousel from "@/components/Carousel";
 import SearchBar from "@/components/SearchBar";
 import Loader from "@/components/Loader";
+import Table from "@/components/Table";
 import API from "@/API.ts";
 
 @Component({
@@ -82,7 +82,8 @@ import API from "@/API.ts";
   components: {
     Carousel,
     SearchBar,
-    Loader
+    Loader,
+    Table
   }
 })
 export default class Home extends Vue {
@@ -105,10 +106,25 @@ export default class Home extends Vue {
         API.TMDB.topRated("movie")
           .then(topMovies => {
             if (!topMovies.data.results) return this.gatherData();
-
-            this.isLoading = false;
-            this.movies = movies.data.results;
-            this.topMovies = topMovies.data.results;
+            API.TMDB.nowPlaying().then(nowPlaying => {
+              if (!nowPlaying.data.results) return this.gatherData();
+              API.TMDB.trending("tv").then(shows => {
+                if (!shows.data.results) return this.gatherData();
+                API.TMDB.topRated("tv").then(topShows => {
+                  if (!topShows.data.results) return this.gatherData();
+                  API.TMDB.popular("tv").then(popularShows => {
+                    if (!popularShows.data.results) return this.gatherData();
+                    this.isLoading = false;
+                    this.movies = movies.data.results;
+                    this.topMovies = topMovies.data.results;
+                    this.nowPlaying = nowPlaying.data.results;
+                    this.shows = shows.data.results;
+                    this.topShows = topShows.data.results;
+                    this.popularShows = popularShows.data.results;
+                  });
+                });
+              });
+            });
           })
           .catch(err => console.log(err));
       })

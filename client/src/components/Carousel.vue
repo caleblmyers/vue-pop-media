@@ -41,9 +41,18 @@ import Media from "@/img/media_placeholder.png";
   props: ["data", "type"]
 })
 export default class Carousel extends Vue {
-  slide = 0;
+  public slide = 0;
   data;
   type;
+
+  changeSlide(e) {
+    let slide = this.slide;
+    console.log(slide, this.data.length);
+    e.target.id === "next" ? slide++ : slide--;
+    if (slide >= this.data.length) slide = 0;
+    else if (slide <= -1) slide = this.data.length - 1;
+    this.slide = slide;
+  }
 
   get mediaType() {
     let mediaType;
@@ -62,14 +71,9 @@ export default class Carousel extends Vue {
     return src;
   }
 
-  changeSlide = e => {
-    console.log(this.slide, this.data.length);
-    e.target.id === "next" ? this.slide++ : this.slide--;
-    if (this.slide >= this.data.length) this.slide = 0;
-    else if (this.slide <= -1) this.slide = this.data.length - 1;
-  };
-
-  goToSlide = (type, e) => (this.slide = e.target.id.slice(type.length));
+  goToSlide(type, e) {
+    this.slide = e.target.id.slice(type.length);
+  }
 }
 </script>
 

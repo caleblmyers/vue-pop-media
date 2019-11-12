@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import Navigation from '@/components/Navigation'
+import { Vue, Component, Prop } from "vue-property-decorator";
+import Navigation from "@/components/Navigation";
 
 @Component({
-  name: 'App',
+  name: "App",
   components: {
     Navigation
   }
@@ -29,6 +29,9 @@ export default class App extends Vue {}
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+}
+.capitalize {
+  text-transform: capitalize;
 }
 
 // #nav {
