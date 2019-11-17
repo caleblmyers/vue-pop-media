@@ -15,7 +15,7 @@
         </template>
 
         <!-- Header  -->
-        <Header :id="id" :type="type" :details="details" :addFavorite="addFavorite" />
+        <Header :details="details" :addFavorite="addFavorite" />
 
         <!-- Details  -->
         <div class="row">
@@ -53,6 +53,8 @@
                   <strong>Cast</strong>
                 </div>
                 <CastSlider
+                  v-if="details.credits"
+                  :handler="changeMedia"
                   :cast="details.credits.cast.sort((a, b) => a.order - b.order)"
                   :type="type"
                 />
@@ -65,6 +67,7 @@
                 </div>
                 <template v-if="details.known_for_department === 'Acting'">
                   <CastSlider
+                    v-if="details.combined_credits"
                     :cast="details.combined_credits.cast.sort((a, b) => b.vote_count - a.vote_count)"
                     :handler="changeMedia"
                     :type="type"
@@ -72,6 +75,7 @@
                 </template>
                 <template v-else>
                   <CastSlider
+                    v-if="details.combined_credits"
                     :cast="details.combined_credits.crew.slice(0, 30).sort((a, b) => b.vote_count - a.vote_count)"
                     :handler="changeMedia"
                     :type="type"
@@ -87,7 +91,9 @@
                 </div>
                 <div class="row bg-light-grey border-round" id="section-recs">
                   <div class="col-12 p-2">
-                    <template v-if="details.recommendations.results.length >= 1">
+                    <template
+                      v-if="details.recommendations && details.recommendations.results.length >= 1"
+                    >
                       <Carousel
                         :data="details.recommendations.results"
                         :type="type"
@@ -108,7 +114,7 @@
                 </div>
                 <div class="row bg-light-grey border-round" id="section-similar">
                   <div class="col-12 p-2">
-                    <template v-if="details.similar.results.length >= 1">
+                    <template v-if="details.similar && details.similar.results.length >= 1">
                       <Carousel
                         :data="details.similar.results"
                         :type="type"
@@ -131,7 +137,10 @@
             <div v-if="type !== 'person'" class="h4">
               <strong>Crew</strong>
             </div>
-            <div v-if="type === 'movie'" class="row no-gutters bg-light-grey border-round py-2">
+            <div
+              v-if="type === 'movie' && details.credits"
+              class="row no-gutters bg-light-grey border-round py-2"
+            >
               <div
                 v-for="person in details.credits.crew.slice(3, 10)"
                 class="col-3 col-lg-12 pl-2 py-1 mr-0"
@@ -188,7 +197,10 @@
                 </div>
                 <div class="text-xs">{{details.status}}</div>
               </div>
-              <div v-if="details.revenue !== 0" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.revenue && details.revenue !== 0"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Revenue</strong>
                 </div>
@@ -196,7 +208,10 @@
                   class="text-xs"
                 >${{details.revenue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</div>
               </div>
-              <div v-if="details.budget !== 0" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.budget && details.budget !== 0"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Budget</strong>
                 </div>
@@ -204,7 +219,10 @@
                   class="text-xs"
                 >${{details.budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}}</div>
               </div>
-              <div v-if="details.spoken_languages[0]" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.spoken_languages && details.spoken_languages[0]"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Available Languages</strong>
                 </div>
@@ -221,7 +239,7 @@
                 <div class="text-xs">{{details.original_language}}</div>
               </div>
               <div
-                v-if="details.production_countries[0]"
+                v-if="details.product_countries && details.production_countries[0]"
                 class="col-6 col-md-4 col-lg-12 px-2 py-1"
               >
                 <div class="text-sm">
@@ -234,7 +252,7 @@
                 >{{country.name}}{{index === details.production_countries.length - 1 ? "" : ", "}}</span>
               </div>
               <div
-                v-if="details.production_companies[0]"
+                v-if="details.product_companies && details.production_companies[0]"
                 class="col-6 col-md-4 col-lg-12 px-2 py-1"
               >
                 <div class="text-sm">
@@ -246,7 +264,10 @@
                   class="text-xs"
                 >{{company.name}}{{index === details.production_companies.length - 1 ? "" : ", "}}</span>
               </div>
-              <div v-if="details.keywords.keywords[0]" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.keywords && details.keywords.keywords[0]"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Keywords</strong>
                 </div>
@@ -320,7 +341,7 @@
                   class="text-xs"
                 >{{moment(details.last_episode_to_air.air_date).format("MMMM Do, YYYY")}}</div>
               </div>
-              <div class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div v-if="details.netwokrs" class="col-6 col-md-4 col-lg-12 px-2 py-1">
                 <div class="text-sm">
                   <strong>Networks</strong>
                 </div>
@@ -330,7 +351,7 @@
                   :key="network.id"
                 >{{network.name}}</div>
               </div>
-              <div class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div v-if="details.languages" class="col-6 col-md-4 col-lg-12 px-2 py-1">
                 <div class="text-sm">
                   <strong>Available Languages</strong>
                 </div>
@@ -355,7 +376,10 @@
                 </div>
                 <div class="text-xs">{{details.origin_country}}</div>
               </div>
-              <div v-if="details.keywords.results[0]" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.keywords && details.keywords.results[0]"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Keywords</strong>
                 </div>
@@ -391,7 +415,10 @@
                 </div>
                 <div class="text-xs">{{moment(details.deathday).format("MMMM Do, YYYY")}}</div>
               </div>
-              <div v-if="details.also_known_as[0]" class="col-6 col-md-4 col-lg-12 px-2 py-1">
+              <div
+                v-if="details.also_known_as && details.also_known_as[0]"
+                class="col-6 col-md-4 col-lg-12 px-2 py-1"
+              >
                 <div class="text-sm">
                   <strong>Also known as</strong>
                 </div>
@@ -439,7 +466,7 @@
               <strong>Comments</strong>
             </div>
             <div class="row no-gutters bg-light-grey border-round py-2">
-              <template v-if="comments[0]">
+              <template v-if="comments && comments[0]">
                 <div v-for="comment in comments" class="col-12 p-2" :key="comment.id">
                   <div class="card bg-purple text-white text-left">
                     <div class="card-header">
@@ -458,7 +485,7 @@
                       </div>
                     </div>
                     <div class="card-body">
-                      <div v-if="isEditing === comment.id.toString()">
+                      <div v-if="comment.id && isEditing === comment.id.toString()">
                         <div class="input-group mb-3">
                           <input
                             type="text"
@@ -502,13 +529,12 @@
               <strong>Reviews</strong>
             </div>
             <div class="row no-gutters bg-light-grey border-round py-2">
-              <template v-if="(details.reviews.results && details.reviews.results[0])">
+              <template
+                v-if="details.reviews && (details.reviews.results && details.reviews.results[0])"
+              >
                 <div v-for="review in details.reviews.results" class="col-12 p-2" :key="review.id">
                   <div class="card bg-dark text-white text-left">
-                    <div class="card-header">
-                      <Gravatar class="rounded-circle" :email="review.author" :size="30" />
-                      {{review.author}}
-                    </div>
+                    <div class="card-header">{{review.author}}</div>
                     <div class="card-body">
                       <p>
                         {{review.content.length > 255
@@ -531,306 +557,179 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import moment from "moment";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import moment from 'moment';
 
-import API from "@/API";
-import CastSlider from "@/components/CastSlider";
-import Carousel from "@/components/Carousel";
-import EpisodeReel from "@/components/EpisodeReel";
-import Loader from "@/components/Loader";
-import Header from "@/components/Header";
+import API from '../API';
+import CastSlider from '@/components/CastSlider.vue';
+import Carousel from '@/components/Carousel.vue';
+import EpisodeReel from '@/components/EpisodeReel.vue';
+import Loader from '@/components/Loader.vue';
+import Header from '@/components/Header.vue';
 
 @Component({
-  name: "Details"
+  name: 'Details',
+  components: {
+    CastSlider,
+    Carousel,
+    EpisodeReel,
+    Loader,
+    Header
+  }
 })
 export default class Details extends Vue {
-  isLoaded = false;
-  error = "";
-  isEditing = "";
-  edit = "";
-  message = "";
-  messageType = "";
-  comment = "";
-  comments = [];
-  details = {};
+  public isLoaded = false;
+  public error = '';
+  public isEditing = '';
+  public edit = '';
+  public message = '';
+  public messageType = '';
+  public comment = '';
+  public comments = [];
+  public details = {};
+  public timer = null;
+  public type = '';
+  public id = '';
 
-  get type() {
-    return this.$route.params.type;
+  public mounted() {
+    this.type = this.$route.params.type;
+    this.id = this.$route.params.id;
+
+    this.getDetails(this.type, this.id);
   }
 
-  get id() {
-    return this.$route.params.id;
-  }
-
-  mounted() {
-    const { type, id } = this.$route.params;
-
-    this.getDetails(type, id);
-
-    // this.props.getDetails(type, id)
-    // API.Comments.getComments(type, id)
-    //   .then(res => {
-    //     const comments = res.data
-    //     this.setState({ comments })
-    //   })
-    //   .catch(err => console.log(err))
-
-    // setTimeout(() => this.setState({
-    //   details: this.props.details,
-    //   isLoaded: true
-    // }), 4000)
-  }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (nextProps.location !== this.props.location) {
-  //     clearTimeout(this.timer);
-  //     console.log("diff type");
-  //     console.log(this.props.match.params.type);
-  //     console.log(nextProps.match.params.type);
-  //     this.setState({ isLoaded: false });
-  //     if (this.props.history.action === "POP") {
-  //       console.log("POP");
-  //       this.timer = setTimeout(() => {
-  //         this.getDetails(
-  //           nextProps.match.params.type,
-  //           nextProps.match.params.id
-  //         );
-  //       }, 3000);
-  //     } else {
-  //       console.log(this.props.history.action);
-  //       this.timer = setTimeout(() => {
-  //         this.getDetails(
-  //           nextProps.match.params.type,
-  //           nextProps.match.params.id
-  //         );
-  //       }, 3000);
-  //     }
-  //     return false;
-  //   }
-  //   // else if (this.props.match.params.type === "movie" && !this.state.details.revenue) {
-  //   //   console.log('movie wait')
-  //   //   console.log(this.props.match.params.type)
-  //   //   console.log(nextProps.match.params.type)
-  //   //   return true
-  //   // }
-  //   else if (
-  //     this.props.match.params.type === "movie" &&
-  //     this.state.details.revenue
-  //   ) {
-  //     console.log("movie update");
-  //     console.log(this.props.match.params.type);
-  //     console.log(nextProps.match.params.type);
-  //     return true;
-  //   } else {
-  //     console.log("updating");
-  //     console.log(this.state.isLoaded);
-  //     console.log(nextState.isLoaded);
-  //     console.log(this.state.details);
-  //     console.log(nextState.details);
-  //     console.log(this.props.match.params.type);
-  //     console.log(nextProps.match.params.type);
-  //     return true;
-  //   }
-  // }
-
-  beforeDestroy() {
-    clearTimeout(this.timer);
-  }
-
-  getDetails(type, id) {
-    // this.setState({ isLoaded: false })
+  public getDetails(type, id) {
     console.log(`Getting ${type} ${id}`);
     API.TMDB.details(type, id)
       .then(pageDetails => {
-        const details = pageDetails.data;
-        if (pageDetails.data.name === "Error") return this.getDetails(type, id);
+        if (pageDetails.data.name === 'Error') return this.getDetails(type, id);
         API.Comments.getComments(type, id)
           .then(pageComments => {
-            const comments = pageComments.data;
-            this.setState({
-              details,
-              comments,
-              message: "",
-              messageType: ""
-              // isLoaded: true
-            });
+            this.details = pageDetails.data;
+            this.comments = pageComments.data;
+            this.message = '';
+            this.messageType = '';
           })
           .catch(err => {
-            let message,
-              messageType = "";
-            message = `Page Comments error: ${err}`;
-            messageType = "danger";
             console.log(err);
-            this.setState({ message, messageType });
+            this.message = `Page Comments error: ${err}`;
+            this.messageType = 'danger';
           });
       })
       .catch(err => {
-        let message,
-          messageType = "";
-        message = `TMDB Details error: ${err}`;
-        messageType = "danger";
         console.log(err);
-        this.setState({ message, messageType });
+        this.message = `TMDB Details error: ${err}`;
+        this.messageType = 'danger';
       });
   }
 
-  addFavorite = (type, id, title) => {
-    API.Favorites.add(type, id, title, 1)
+  public addFavorite = (type, id, title) => {
+    API.Favorites.add(type, id, title, 1, 2)
       .then(res => {
-        let message,
-          messageType = "";
         if (res.data.errors) {
-          message =
-            res.data.errors[0].type === "unique violation"
-              ? "This item is already on your favorites!"
-              : "Unknown error";
-          messageType = "danger";
+          this.message =
+            res.data.errors[0].type === 'unique violation'
+              ? 'This item is already on your favorites!'
+              : 'Unknown error';
+          this.messageType = 'danger';
         } else {
-          message = `${res.data.title} added to favorites!`;
-          messageType = "success";
+          this.message = `${res.data.title} added to favorites!`;
+          this.messageType = 'success';
         }
-        this.setState({ message, messageType });
       })
       .catch(err => {
-        let message,
-          messageType = "";
-        message = `Add Fave error: ${err}`;
-        messageType = "danger";
         console.log(err);
-        this.setState({ message, messageType });
+        this.message = `Add Fave error: ${err}`;
+        this.messageType = 'danger';
       });
-  };
+  }
 
-  handleChange = e => this.setState({ [e.target.name]: e.target.value });
+  public handleChange = e => (this[e.target.name] = e.target.value);
 
-  handleSubmit = e => {
+  public handleSubmit = e => {
     e.preventDefault();
-    const { comment } = this.state;
+    const comment = this.comment;
     const { type, id } = this.$route.params;
 
-    let newComment = {
+    const newComment = {
       mediaType: type,
       tmdbId: id,
       body: comment,
       replyTo: 0
     };
 
-    API.Comments.add(newComment, authToken)
+    API.Comments.add(newComment, 1)
       .then(res => {
         API.Comments.getComments(type, id)
           .then(res => {
-            const comments = res.data;
-            this.setState({
-              comments,
-              comment: ""
-            });
+            this.comments = res.data;
+            this.comment = '';
           })
           .catch(err => {
-            let message,
-              messageType = "";
-            message = `Page Comments error: ${err}`;
-            messageType = "danger";
             console.log(err);
-            this.setState({ message, messageType });
+            this.message = `Page Comments error: ${err}`;
+            this.messageType = 'danger';
           });
       })
       .catch(err => {
-        let message,
-          messageType = "";
-        message = `New Comment error: ${err}`;
-        messageType = "danger";
         console.log(err);
-        this.setState({ message, messageType });
+        this.message = `New Comment error: ${err}`;
+        this.messageType = 'danger';
       });
-  };
+  }
 
-  changeMedia = (type, id) => {
+  public changeMedia = (type, id) => {
+    this.message = '';
+    this.messageType = '';
     this.getDetails(type, id);
-    API.Comments.getComments(type, id)
-      .then(res => {
-        const comments = res.data;
-        setTimeout(
-          () =>
-            this.setState({
-              comments,
-              message: "",
-              messageType: "",
-              details: this.props.details,
-              isLoaded: true
-            }),
-          4000
-        );
-      })
-      .catch(err => {
-        let message,
-          messageType = "";
-        message = `Page Comments error: ${err}`;
-        messageType = "danger";
-        console.log(err);
-        this.setState({ message, messageType });
-      });
-  };
+  }
 
-  deleteComment = e => {
-    const { authToken } = this.context;
+  public deleteComment = e => {
     const { type, id } = this.$route.params;
 
-    API.Comments.delete(e.target.value, authToken)
+    API.Comments.delete(e.target.value, 1)
       .then(res => {
         API.Comments.getComments(type, id)
           .then(res => res.data)
-          .then(comments => this.setState({ comments }))
+          .then(comments => (this.comments = comments))
           .catch(err => {
-            let message,
-              messageType = "";
-            message = `Page Comments error: ${err}`;
-            messageType = "danger";
             console.log(err);
-            this.setState({ message, messageType });
+            this.message = `Page Comments error: ${err}`;
+            this.messageType = 'danger';
           });
       })
       .catch(err => {
-        let message,
-          messageType = "";
-        message = `Delete Comment error: ${err}`;
-        messageType = "danger";
         console.log(err);
-        this.setState({ message, messageType });
+        this.message = `Delete Comment error: ${err}`;
+        this.messageType = 'danger';
       });
-  };
+  }
 
   // This should just toggle
-  editComment = e => {
-    if (this.state.isEditing === "")
-      this.setState({ isEditing: e.target.value });
-    else this.setState({ isEditing: "" });
-  };
+  public editComment = e => {
+    if (this.isEditing === '') this.isEditing = e.target.value;
+    else this.isEditing = '';
+  }
 
-  submitEdit = e => {
-    const { authToken } = this.context;
-    const { isEditing, edit } = this.state;
-    const { type, id } = this.props.match.params;
+  public submitEdit = e => {
+    const { isEditing, edit } = this;
+    const { type, id } = this.$route.params;
 
     if (isEditing) {
-      API.Comments.edit(isEditing, edit, authToken)
+      API.Comments.edit(isEditing, edit, 1)
         .then(res => {
           API.Comments.getComments(type, id)
             .then(res => res.data)
-            .then(comments => this.setState({ comments }))
+            .then(comments => (this.comments = comments))
             .catch(err => console.log(err));
         })
         .catch(err => {
-          let message,
-            messageType = "";
-          message = `Edit Comment error: ${err}`;
-          messageType = "danger";
           console.log(err);
-          this.setState({ message, messageType });
-        })
-        .finally(this.setState({ isEditing: "" }));
+          this.message = `Edit Comment error: ${err}`;
+          this.messageType = 'danger';
+        });
     }
-  };
+  }
 }
 </script>
 

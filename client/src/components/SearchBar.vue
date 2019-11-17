@@ -32,15 +32,15 @@
   </div>
 </template>
 
-<script>
-import { Vue, Component, Prop } from "vue-property-decorator";
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({
-  name: "SearchBar",
-  props: ["handler"]
+  name: 'SearchBar',
+  props: ['handler'],
 })
 export default class SearchBar extends Vue {
-  keyword = "";
+  public keyword = '';
 
   get routeName() {
     console.log(this.$route.name);

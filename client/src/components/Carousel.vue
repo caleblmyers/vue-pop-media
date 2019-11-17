@@ -33,22 +33,22 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import Media from "@/img/media_placeholder.png";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import Media from '../img/media_placeholder.png';
 
 @Component({
-  name: "Carousel",
-  props: ["data", "type"]
+  name: 'Carousel',
+  props: ['data', 'type'],
 })
 export default class Carousel extends Vue {
   public slide = 0;
-  data;
-  type;
+  public data;
+  public type;
 
-  changeSlide(e) {
+  public changeSlide(e) {
     let slide = this.slide;
     console.log(slide, this.data.length);
-    e.target.id === "next" ? slide++ : slide--;
+    e.target.id === 'next' ? slide++ : slide--;
     if (slide >= this.data.length) slide = 0;
     else if (slide <= -1) slide = this.data.length - 1;
     this.slide = slide;
@@ -56,22 +56,26 @@ export default class Carousel extends Vue {
 
   get mediaType() {
     let mediaType;
-    if (this.type === "movie" || this.type === "topMovie") mediaType = "movie";
-    else if (this.type === "show" || this.type === "topShow") mediaType = "tv";
+    if (this.type === 'movie' || this.type === 'topMovie') mediaType = 'movie';
+    else if (this.type === 'show' || this.type === 'topShow') mediaType = 'tv';
     else mediaType = this.type;
     return mediaType;
   }
 
   get imgSrc() {
-    let src = this.data[this.slide].backdrop_path
-      ? `https://image.tmdb.org/t/p/original/${this.data[this.slide].backdrop_path}`
-      : this.type === "episodes" && this.data[this.slide].still_path
-      ? `https://image.tmdb.org/t/p/original/${this.data[this.slide].still_path}`
+    const src = this.data[this.slide].backdrop_path
+      ? `https://image.tmdb.org/t/p/original/${
+          this.data[this.slide].backdrop_path
+        }`
+      : this.type === 'episodes' && this.data[this.slide].still_path
+      ? `https://image.tmdb.org/t/p/original/${
+          this.data[this.slide].still_path
+        }`
       : Media;
     return src;
   }
 
-  goToSlide(type, e) {
+  public goToSlide(type, e) {
     this.slide = e.target.id.slice(type.length);
   }
 }

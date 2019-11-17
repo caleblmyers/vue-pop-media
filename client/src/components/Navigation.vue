@@ -51,16 +51,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import Popcorn from "@/img/popcorn.png";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import Popcorn from '@/img/popcorn.png';
 
 export default class Navigation extends Vue {
-  popcorn = Popcorn;
-  collapsed = true;
-  togglerClass = `navbar-toggler ${this.collapsed && "collapsed"}`;
-  targetClass = `collapse navbar-collapse ${!this.collapsed && "show"}`;
+  public popcorn = Popcorn;
+  public collapsed = true;
+  public togglerClass = `navbar-toggler ${this.collapsed && 'collapsed'}`;
+  public targetClass = `collapse navbar-collapse ${!this.collapsed && 'show'}`;
 
-  toggleCollapse() {
+  public toggleCollapse() {
     this.collapsed = !this.collapsed;
   }
 }

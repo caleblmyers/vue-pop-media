@@ -8,10 +8,11 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Loader"
-};
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+
+@Component
+export default class Loader extends Vue {}
 </script>
 
 <style lang="scss" scoped>

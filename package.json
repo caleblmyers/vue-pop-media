@@ -4,10 +4,13 @@
   "description": "Pop Media built with Vue.js and TypeScript",
   "main": "server/server.js",
   "scripts": {
-    "start": "concurrently -n client,server \"npm run client:dev\" \"npm run server:dev\"",
+    "build": "cd client && npm run build",
+    "start": "node server/server.js",
+    "start:dev": "concurrently -n client,server \"npm run client:dev\" \"npm run server:dev\"",
     "client:dev": "cd client && npm start",
     "server:dev": "nodemon server/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,9 @@
   "homepage": "https://github.com/caleblmyers/vue-pop-media#readme",
   "devDependencies": {
     "concurrently": "^5.0.0",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "tslint": "^5.20.1",
+    "tslint-config-airbnb": "^5.11.2",
+    "typescript": "^3.7.2"
   }
 }

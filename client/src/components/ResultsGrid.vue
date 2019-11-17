@@ -74,74 +74,76 @@
   </div>
 </template>
 
-<script>
-import { Vue, Component, Prop } from "vue-property-decorator";
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import Person from "@/img/person_placeholder.png";
-import MediaTall from "@/img/media_placeholder_tall.png";
+import Person from '@/img/person_placeholder.png';
+import MediaTall from '@/img/media_placeholder_tall.png';
 
 @Component({
-  name: "ResultsGrid",
-  props: ["results"]
+  name: 'ResultsGrid',
+  props: ['results']
 })
 export default class ResultsGrid extends Vue {
-  sqSize = 80;
-  strokeWidth = 4;
-  radius = (sqSize - strokeWidth) / 2;
-  viewBox = `0 0 ${sqSize} ${sqSize}`;
-  dashArray = radius * Math.PI * 2;
-  type = this.results[0].name ? "tv" : "movie";
-  genres = {
+  public personImg = Person;
+  public mediaTallImg = MediaTall;
+  public sqSize = 80;
+  public strokeWidth = 4;
+  public radius = (this.sqSize - this.strokeWidth) / 2;
+  public viewBox = `0 0 ${this.sqSize} ${this.sqSize}`;
+  public dashArray = this.radius * Math.PI * 2;
+  public type = this.$props.results[0].name ? 'tv' : 'movie';
+  public genres = {
     movie: {
-      28: "Action",
-      12: "Adventure",
-      16: "Animation",
-      35: "Comedy",
-      80: "Crime",
-      99: "Documentary",
-      18: "Drama",
-      10751: "Family",
-      14: "Fantasy",
-      36: "History",
-      27: "Horror",
-      10402: "Music",
-      9648: "Mystery",
-      10749: "Romance",
-      878: "Science Fiction",
-      10770: "TV Movie",
-      53: "Thriller",
-      10752: "War",
-      37: "Western"
+      28: 'Action',
+      12: 'Adventure',
+      16: 'Animation',
+      35: 'Comedy',
+      80: 'Crime',
+      99: 'Documentary',
+      18: 'Drama',
+      10751: 'Family',
+      14: 'Fantasy',
+      36: 'History',
+      27: 'Horror',
+      10402: 'Music',
+      9648: 'Mystery',
+      10749: 'Romance',
+      878: 'Science Fiction',
+      10770: 'TV Movie',
+      53: 'Thriller',
+      10752: 'War',
+      37: 'Western'
     },
     tv: {
-      10759: "Action & Adventure",
-      16: "Animation",
-      35: "Comedy",
-      80: "Crime",
-      99: "Documentary",
-      18: "Drama",
-      10751: "Family",
-      10762: "Kids",
-      9648: "Mystery",
-      10763: "News",
-      10764: "Reality",
-      10765: "Sci-Fi & Fantasy",
-      10766: "Soap",
-      10767: "Talk",
-      10768: "War & Politics",
-      37: "Western"
+      10759: 'Action & Adventure',
+      16: 'Animation',
+      35: 'Comedy',
+      80: 'Crime',
+      99: 'Documentary',
+      18: 'Drama',
+      10751: 'Family',
+      10762: 'Kids',
+      9648: 'Mystery',
+      10763: 'News',
+      10764: 'Reality',
+      10765: 'Sci-Fi & Fantasy',
+      10766: 'Soap',
+      10767: 'Talk',
+      10768: 'War & Politics',
+      37: 'Western'
     }
   };
 
   get imgSrc() {
-    let src;
-    result.media_type === "person"
-      ? result.profile_path
-        ? `https://image.tmdb.org/t/p/original/${result.profile_path}`
-        : Person
-      : result.poster_path
-      ? `https://image.tmdb.org/t/p/original/${result.poster_path}`
-      : MediaTall;
+    const src =
+      this.$props.results[0].media_type === 'person'
+        ? this.$props.results[0].profile_path
+          ? `https://image.tmdb.org/t/p/original/${this.$props.results[0].profile_path}`
+          : this.personImg
+        : this.$props.results[0].poster_path
+        ? `https://image.tmdb.org/t/p/original/${this.$props.results[0].poster_path}`
+        : this.mediaTallImg;
 
     return src;
   }

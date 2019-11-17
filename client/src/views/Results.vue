@@ -20,45 +20,45 @@
   </div>
 </template>
 
-<script>
-import { Vue, Component, Prop } from "vue-property-decorator";
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
-import API from "@/API";
-import SearchBar from "@/components/SearchBar";
-import ResultsGrid from "@/components/ResultsGrid";
+import API from '../API';
+import SearchBar from '@/components/SearchBar.vue';
+import ResultsGrid from '@/components/ResultsGrid.vue';
 
 @Component({
-  name: "Results",
+  name: 'Results',
   components: {
     SearchBar,
     ResultsGrid
   }
 })
 export default class Results extends Vue {
-  keyword = "";
-  results;
-  resultsLoaded = false;
+  public keyword = '';
+  public results;
+  public resultsLoaded = false;
 
-  mounted() {
-    this.keyword && this.processSearch(this.keyword);
+  public mounted() {
+    // this.keyword && this.processSearch(this.keyword);
   }
 
-  submit = (keyword, e) => {
-    e && e.preventDefault();
+  public submit(keyword, e) {
+    e.preventDefault();
     this.processSearch(keyword || this.keyword);
-  };
+  }
 
-  processSearch(keyword) {
+  public processSearch(keyword) {
     API.TMDB.search(keyword)
       .then(res => {
         console.log(res.data.results);
         console.log(this.results);
         this.results = res.data.results;
-        this.resultsLoaded = true
+        this.resultsLoaded = true;
         console.log(this.results);
       })
       .catch(err => console.log(err));
-  };
+  }
 }
 </script>
 

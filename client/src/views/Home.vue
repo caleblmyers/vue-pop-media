@@ -1,8 +1,4 @@
 <template>
-  <!-- <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>-->
   <div class="Home">
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
@@ -69,16 +65,16 @@
   </div>
 </template>
 
-<script>
-import { Vue, Component, Prop } from "vue-property-decorator";
-import Carousel from "@/components/Carousel";
-import SearchBar from "@/components/SearchBar";
-import Loader from "@/components/Loader";
-import Table from "@/components/Table";
-import API from "@/API.ts";
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import Carousel from '@/components/Carousel.vue';
+import SearchBar from '@/components/SearchBar.vue';
+import Loader from '@/components/Loader.vue';
+import Table from '@/components/Table.vue';
+import API from '../API';
 
 @Component({
-  name: "Home",
+  name: 'Home',
   components: {
     Carousel,
     SearchBar,
@@ -87,32 +83,32 @@ import API from "@/API.ts";
   }
 })
 export default class Home extends Vue {
-  movies = [];
-  topMovies = [];
-  nowPlaying = [];
-  shows = [];
-  topShows = [];
-  popularShows = [];
-  isLoading = true;
+  public movies = [];
+  public topMovies = [];
+  public nowPlaying = [];
+  public shows = [];
+  public topShows = [];
+  public popularShows = [];
+  public isLoading = true;
 
-  mounted() {
+  public mounted() {
     this.gatherData();
   }
 
-  gatherData() {
-    API.TMDB.trending("movie")
+  public gatherData() {
+    API.TMDB.trending('movie')
       .then(movies => {
         if (!movies.data.results) return this.gatherData();
-        API.TMDB.topRated("movie")
+        API.TMDB.topRated('movie')
           .then(topMovies => {
             if (!topMovies.data.results) return this.gatherData();
             API.TMDB.nowPlaying().then(nowPlaying => {
               if (!nowPlaying.data.results) return this.gatherData();
-              API.TMDB.trending("tv").then(shows => {
+              API.TMDB.trending('tv').then(shows => {
                 if (!shows.data.results) return this.gatherData();
-                API.TMDB.topRated("tv").then(topShows => {
+                API.TMDB.topRated('tv').then(topShows => {
                   if (!topShows.data.results) return this.gatherData();
-                  API.TMDB.popular("tv").then(popularShows => {
+                  API.TMDB.popular('tv').then(popularShows => {
                     if (!popularShows.data.results) return this.gatherData();
                     this.isLoading = false;
                     this.movies = movies.data.results;
@@ -132,3 +128,15 @@ export default class Home extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.now-playing,
+.now-playing:hover {
+  color: inherit;
+  text-decoration: none;
+}
+
+.table {
+  max-width: 100%;
+}
+</style>

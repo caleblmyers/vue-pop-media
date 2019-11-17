@@ -21,12 +21,12 @@
   </table>
 </template>
 
-<script>
-import { Vue, Component, Prop } from "vue-property-decorator";
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component({
-  name: "Table",
-  props: ["dataSet", "type"]
+  name: 'Table',
+  props: ['dataSet', 'type'],
 })
 export default class Table extends Vue {}
 </script>
