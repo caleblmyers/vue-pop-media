@@ -1,6 +1,6 @@
 <template>
   <div class="Details pb-5 position-relative">
-    <template v-if="isLoaded">
+    <template v-if="!isLoaded">
       <Loader />
     </template>
     <template v-else>
@@ -15,7 +15,13 @@
         </template>
 
         <!-- Header  -->
-        <Header :details="details" :addFavorite="addFavorite" />
+        <Header
+          v-if="isLoaded"
+          :details="details"
+          :type="type"
+          :id="id"
+          :addFavorite="addFavorite"
+        />
 
         <!-- Details  -->
         <div class="row">
@@ -557,7 +563,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import moment from 'moment';
 
 import API from '../API';
@@ -598,6 +604,10 @@ export default class Details extends Vue {
     this.getDetails(this.type, this.id);
   }
 
+  public moment() {
+    return moment();
+  }
+
   public getDetails(type, id) {
     console.log(`Getting ${type} ${id}`);
     API.TMDB.details(type, id)
@@ -609,6 +619,7 @@ export default class Details extends Vue {
             this.comments = pageComments.data;
             this.message = '';
             this.messageType = '';
+            this.isLoaded = true;
           })
           .catch(err => {
             console.log(err);
@@ -623,7 +634,7 @@ export default class Details extends Vue {
       });
   }
 
-  public addFavorite = (type, id, title) => {
+  public addFavorite(type, id, title) {
     API.Favorites.add(type, id, title, 1, 2)
       .then(res => {
         if (res.data.errors) {
@@ -644,9 +655,11 @@ export default class Details extends Vue {
       });
   }
 
-  public handleChange = e => (this[e.target.name] = e.target.value);
+  public handleChange(e) {
+    this[e.target.name] = e.target.value;
+  }
 
-  public handleSubmit = e => {
+  public handleSubmit(e) {
     e.preventDefault();
     const comment = this.comment;
     const { type, id } = this.$route.params;
@@ -684,7 +697,7 @@ export default class Details extends Vue {
     this.getDetails(type, id);
   }
 
-  public deleteComment = e => {
+  public deleteComment(e) {
     const { type, id } = this.$route.params;
 
     API.Comments.delete(e.target.value, 1)
@@ -706,12 +719,12 @@ export default class Details extends Vue {
   }
 
   // This should just toggle
-  public editComment = e => {
+  public editComment(e) {
     if (this.isEditing === '') this.isEditing = e.target.value;
     else this.isEditing = '';
   }
 
-  public submitEdit = e => {
+  public submitEdit(e) {
     const { isEditing, edit } = this;
     const { type, id } = this.$route.params;
 
@@ -730,10 +743,22 @@ export default class Details extends Vue {
         });
     }
   }
+
+  @Watch('$route')
+  public watchRoute(newVal, oldVal) {
+    if (newVal.params !== oldVal.params) {
+      console.log('new val');
+      console.log(newVal);
+      console.log('old val');
+      console.log(oldVal);
+      this.isLoaded = false;
+      this.getDetails(newVal.params.type, newVal.params.id);
+    }
+  }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 /* Collections, credits, genres, outisde links */
 
 #data-container {
@@ -804,27 +829,6 @@ export default class Details extends Vue {
 
 #section-similar {
   margin-left: 0.25rem;
-}
-
-.circle-background,
-.circle-progress {
-  fill: none;
-}
-
-.circle-background {
-  stroke: #ddd;
-}
-
-.circle-progress {
-  stroke: #352352;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.circle-text {
-  font-size: 1.5em;
-  font-weight: bold;
-  fill: #352352;
 }
 
 @media only screen and (max-width: 991px) {

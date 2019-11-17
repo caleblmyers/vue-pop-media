@@ -73,7 +73,7 @@ const API = {
       return axios.get(`http://localhost:3001/api/tmdb/details/${type}/${id}`);
     },
     discover(type: any, query: any) {
-      return axios.post('api/tmdb/discover', { type, query });
+      return axios.post('http://localhost:3001/api/tmdb/discover', { type, query });
     },
     nowPlaying() {
       return axios.get('http://localhost:3001/api/tmdb/now_playing');
@@ -81,7 +81,7 @@ const API = {
     popular(type: any) {
       return axios.get(`http://localhost:3001/api/tmdb/popular/${type}`);
     },
-    ratings(type: any) {
+    ratings() {
       return axios.get('http://localhost:3001/api/tmdb/ratings');
     },
     search(data: any) {

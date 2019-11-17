@@ -21,7 +21,7 @@
             <router-link class="nav-link" to="/" @click="toggleCollapse">Home</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/about" @click="toggleCollapse">Discover</router-link>
+            <router-link class="nav-link" to="/discover" @click="toggleCollapse">Discover</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" to="/results" @click="toggleCollapse">Search</router-link>

@@ -150,4 +150,25 @@ a:hover {
   background-color: #352352;
   color: #f5f5f5;
 }
+
+.circle-background,
+.circle-progress {
+  fill: none;
+}
+
+.circle-background {
+  stroke: #ddd;
+}
+
+.circle-progress {
+  stroke: #352352;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.circle-text {
+  font-size: 1.5em;
+  font-weight: bold;
+  fill: #352352;
+}
 </style>

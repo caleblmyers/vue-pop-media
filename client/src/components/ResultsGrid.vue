@@ -76,13 +76,23 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
+import moment from 'moment';
 
 import Person from '@/img/person_placeholder.png';
 import MediaTall from '@/img/media_placeholder_tall.png';
 
 @Component({
   name: 'ResultsGrid',
-  props: ['results']
+  props: {
+    results: {
+      type: Array,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true
+    }
+  }
 })
 export default class ResultsGrid extends Vue {
   public personImg = Person;
@@ -92,7 +102,6 @@ export default class ResultsGrid extends Vue {
   public radius = (this.sqSize - this.strokeWidth) / 2;
   public viewBox = `0 0 ${this.sqSize} ${this.sqSize}`;
   public dashArray = this.radius * Math.PI * 2;
-  public type = this.$props.results[0].name ? 'tv' : 'movie';
   public genres = {
     movie: {
       28: 'Action',
@@ -135,17 +144,21 @@ export default class ResultsGrid extends Vue {
     }
   };
 
-  get imgSrc() {
+  public imgSrc(result) {
     const src =
-      this.$props.results[0].media_type === 'person'
-        ? this.$props.results[0].profile_path
-          ? `https://image.tmdb.org/t/p/original/${this.$props.results[0].profile_path}`
+      result.media_type === 'person'
+        ? result.profile_path
+          ? `https://image.tmdb.org/t/p/original/${result.profile_path}`
           : this.personImg
-        : this.$props.results[0].poster_path
-        ? `https://image.tmdb.org/t/p/original/${this.$props.results[0].poster_path}`
+        : result.poster_path
+        ? `https://image.tmdb.org/t/p/original/${result.poster_path}`
         : this.mediaTallImg;
 
     return src;
+  }
+
+  public moment() {
+    return moment();
   }
 }
 </script>

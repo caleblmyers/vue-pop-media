@@ -7,7 +7,7 @@
           <strong>Title</strong>
         </div>
       </template>
-      <template v-else-if="data[0]">
+      <template>
         <router-link
           :to="`/details/${mediaType}/${data[slide].id}`"
           @click="() => handler(mediaType, data[slide].id)"
@@ -38,7 +38,7 @@ import Media from '../img/media_placeholder.png';
 
 @Component({
   name: 'Carousel',
-  props: ['data', 'type'],
+  props: ['data', 'type', 'handler']
 })
 export default class Carousel extends Vue {
   public slide = 0;
@@ -47,7 +47,6 @@ export default class Carousel extends Vue {
 
   public changeSlide(e) {
     let slide = this.slide;
-    console.log(slide, this.data.length);
     e.target.id === 'next' ? slide++ : slide--;
     if (slide >= this.data.length) slide = 0;
     else if (slide <= -1) slide = this.data.length - 1;
@@ -81,7 +80,7 @@ export default class Carousel extends Vue {
 }
 </script>
 
-<style scoped>
+<style lang="scss">
 .div-featured {
   /* width: 40vw; */
   /* max-width: 720px; */

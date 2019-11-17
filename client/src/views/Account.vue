@@ -192,6 +192,10 @@ export default class Account extends Vue {
   public message = '';
   public messageType = '';
 
+  public moment() {
+    return moment();
+  }
+
   public mounted() {
     API.Users.getMe(1)
       .then(res => res.data)
